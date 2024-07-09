@@ -191,10 +191,11 @@ export default function UserPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'name' },
+                  { id: 'username', label: 'User Name' },
                   { id: 'email', label: 'Email' },
                   { id: 'role', label: 'Role' },
                   { id: '' },
+
                 ]}
               />
               <TableBody>
@@ -204,11 +205,9 @@ export default function UserPage() {
                     <UserTableRow
                       key={user.userId}
                       id={user.userId}
-                      password={user.password}
-                      fullName={user.fullName}
+                      fullName={user.username}
                       email={user.email}
-                      role={user.role.roleName}
-                      roleId={user.role.roleId}
+                      role={user.roleName}
                       selected={selected.indexOf(user.id) !== -1}
                       handleClick={(event) => handleClick(event, user.id)}
                       onDelete={() => deleteUser(user.userId)} 

@@ -26,13 +26,17 @@ export default function UserTableRow({
   fullName,
   role,
   email,
+  username,
+  status,
   handleClick,
   roleId,
   password,
   onDelete,
   onUpdate,
   gender,
-
+  counterId,
+  counterNumber,
+  phoneNumber
 }) {
   console.log("id",id)
 
@@ -128,6 +132,8 @@ UserTableRow.propTypes = {
   email: PropTypes.any,
   role: PropTypes.string,
   fullName: PropTypes.any,
+  username: PropTypes.any,
+  status: PropTypes.bool,
   selected: PropTypes.any,
   password: PropTypes.any,
   onDelete: PropTypes.func,

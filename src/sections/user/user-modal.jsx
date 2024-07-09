@@ -38,6 +38,7 @@ export default function InfoModal({ show, handleClose, fullName, role, email, pa
 InfoModal.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
   fullName: PropTypes.string.isRequired,
   password: PropTypes.any.isRequired,
   email: PropTypes.any.isRequired,
