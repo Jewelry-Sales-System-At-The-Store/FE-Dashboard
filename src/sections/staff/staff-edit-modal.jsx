@@ -1,38 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Select from '@mui/material/Select';
+import { useState, useEffect } from 'react';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { InputLabel, FormControl } from '@mui/material';
+import { InputLabel, FormControl, Select, MenuItem } from '@mui/material';
 
 function StaffEditForm({ open, onClose, onSubmit, staff }) {
-
-    const [formState, setFormState] = React.useState({
-        staffId: staff ? staff.staffId : '',
-        userName: staff ? staff.userName : '',
-        email: staff ? staff.email : '',
-        password: staff ? staff.password : '',
-        roleId: staff ? staff.roleId : '',
-        counterId: staff ? staff.counterId : '',
-        status: staff ? staff.status : '',
+    const [formState, setFormState] = useState({
+        username: '',
+        fullName: '',
+        email: '',
+        gender: '',
+        password: '',
+        roleId: ''
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (staff) {
             setFormState({
-                staffId: staff.staffId,
-                userName: staff.userName,
+                username: staff.username,
+                fullName: staff.fullName,
                 email: staff.email,
+                gender: staff.gender,
                 password: staff.password,
-                roleId: staff.roleId,
-                counterId: staff.counterId,
-                status: staff.status,
+                roleId: staff.roleId
             });
         }
     }, [staff]);
@@ -43,7 +38,7 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSubmit(formState);
+        onSubmit({ ...formState, userId: staff.userId });
         onClose();
     };
 
@@ -52,46 +47,50 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
             <DialogTitle id="form-dialog-title">Edit Staff</DialogTitle>
             <DialogContent>
                 <TextField
-                    autoFocus
                     margin="dense"
-                    name="staffId"
-                    label="Staff ID"
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    value={formState.staffId}
-                />
-
-                <TextField
-                    margin="dense"
-                    name="userName"
+                    name="username"
                     label="User Name"
                     type="text"
                     fullWidth
+                    value={formState.username}
                     onChange={handleChange}
-                    value={formState.userName}
                 />
-
+                <TextField
+                    margin="dense"
+                    name="fullName"
+                    label="Full Name"
+                    type="text"
+                    fullWidth
+                    value={formState.fullName}
+                    onChange={handleChange}
+                />
                 <TextField
                     margin="dense"
                     name="email"
                     label="Email"
                     type="email"
                     fullWidth
-                    onChange={handleChange}
                     value={formState.email}
+                    onChange={handleChange}
                 />
-
+                <TextField
+                    margin="dense"
+                    name="gender"
+                    label="Gender"
+                    type="text"
+                    fullWidth
+                    value={formState.gender}
+                    onChange={handleChange}
+                />
                 <TextField
                     margin="dense"
                     name="password"
                     label="Password"
                     type="password"
                     fullWidth
-                    onChange={handleChange}
                     value={formState.password}
+                    onChange={handleChange}
                 />
-
                 <FormControl fullWidth margin="dense">
                     <InputLabel id="role-label">Role ID</InputLabel>
                     <Select
@@ -101,36 +100,10 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
                         value={formState.roleId}
                         onChange={handleChange}
                     >
-                        <MenuItem value="Staff">Staff</MenuItem>
-                        <MenuItem value="Admin">Admin</MenuItem>
-                        <MenuItem value="Manager">Manager</MenuItem>
+                        <MenuItem value="2">Manager</MenuItem>
+                        <MenuItem value="3">Staff</MenuItem>
                     </Select>
                 </FormControl>
-
-                <TextField
-                    margin="dense"
-                    name="counterId"
-                    label="Counter ID"
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    value={formState.counterId}
-                />
-
-                <FormControl fullWidth margin="dense">
-                    <InputLabel id="status-label">Status</InputLabel>
-                    <Select
-                        labelId="status-label"
-                        name="status"
-                        label="Status"
-                        value={formState.status}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                    </Select>
-                </FormControl>
-
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
@@ -145,14 +118,14 @@ StaffEditForm.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     staff: PropTypes.shape({
-        staffId: PropTypes.any,
-        userName: PropTypes.string,
+        userId: PropTypes.string,
+        username: PropTypes.string,
+        fullName: PropTypes.string,
         email: PropTypes.string,
+        gender: PropTypes.string,
         password: PropTypes.string,
-        roleId: PropTypes.string,
-        counterId: PropTypes.any,
-        status: PropTypes.string,
-    }),
+        roleId: PropTypes.string
+    })
 };
 
 export default StaffEditForm;

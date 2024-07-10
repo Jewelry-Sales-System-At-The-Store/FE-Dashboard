@@ -1,37 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
-import Select from '@mui/material/Select';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { InputLabel, FormControl } from '@mui/material';
+import { InputLabel, FormControl, Select, MenuItem } from '@mui/material';
 
 function StaffForm({ open, onClose, onSubmit }) {
     const initialFormState = {
-        staffId: '',
-        userName: '',
+        username: '',
+        fullName: '',
         email: '',
+        gender: '',
         password: '',
-        roleId: '',
-        counterId: '',
-        status: '',
+        roleId: ''
     };
 
-    const [formState, setFormState] = React.useState(initialFormState);
+    const [formState, setFormState] = useState(initialFormState);
 
     const handleChange = (e) => {
-        setFormState({ ...formState, [e.target.name]: e.target.value })
+        setFormState({ ...formState, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault(); // Ngăn chặn hành động submit mặc định của form
-        onSubmit(formState); // Gọi addPromotion
-        setFormState(initialFormState); // Clear các trường của form sau khi submit
+        e.preventDefault();
+        onSubmit(formState);
+        setFormState(initialFormState);
         onClose();
     };
 
@@ -40,42 +36,50 @@ function StaffForm({ open, onClose, onSubmit }) {
             <DialogTitle id="form-dialog-title">New Staff</DialogTitle>
             <DialogContent>
                 <TextField
-                    autoFocus
                     margin="dense"
-                    name="staffId"
-                    label="Staff ID"
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                />
-
-                <TextField
-                    margin="dense"
-                    name="userName"
+                    name="username"
                     label="User Name"
                     type="text"
                     fullWidth
                     onChange={handleChange}
+                    value={formState.username}
                 />
-
+                <TextField
+                    margin="dense"
+                    name="fullName"
+                    label="Full Name"
+                    type="text"
+                    fullWidth
+                    onChange={handleChange}
+                    value={formState.fullName}
+                />
                 <TextField
                     margin="dense"
                     name="email"
                     label="Email"
+                    type="email"
+                    fullWidth
+                    onChange={handleChange}
+                    value={formState.email}
+                />
+                <TextField
+                    margin="dense"
+                    name="gender"
+                    label="Gender"
                     type="text"
                     fullWidth
                     onChange={handleChange}
+                    value={formState.gender}
                 />
-
                 <TextField
                     margin="dense"
                     name="password"
                     label="Password"
-                    type="text"
+                    type="password"
                     fullWidth
                     onChange={handleChange}
+                    value={formState.password}
                 />
-
                 <FormControl fullWidth margin="dense">
                     <InputLabel id="role-label">Role ID</InputLabel>
                     <Select
@@ -85,32 +89,8 @@ function StaffForm({ open, onClose, onSubmit }) {
                         value={formState.roleId}
                         onChange={handleChange}
                     >
-                        <MenuItem value="Staff">Staff</MenuItem>
-                        <MenuItem value="Admin">Admin</MenuItem>
-                        <MenuItem value="Manager">Manager</MenuItem>
-                    </Select>
-                </FormControl>
-
-                <TextField
-                    margin="dense"
-                    name="counterId"
-                    label="Counter ID"
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                />
-
-                <FormControl fullWidth margin="dense">
-                    <InputLabel id="status-label">Status</InputLabel>
-                    <Select
-                        labelId="status-label"
-                        name="status"
-                        label="Status"
-                        value={formState.status}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
+                        <MenuItem value="2">Manager</MenuItem>
+                        <MenuItem value="3">Staff</MenuItem>
                     </Select>
                 </FormControl>
             </DialogContent>
