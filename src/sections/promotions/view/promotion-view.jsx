@@ -163,12 +163,11 @@ export default function PromotionView() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'promotionId', label: 'PromotionId' },
                   { id: 'type', label: 'Type' },
                   { id: 'discountRate', label: 'DiscountRate' },
                   { id: 'startDate', label: 'StartDate' },
                   { id: 'endDate', label: 'EndDate' },
-                  { id: '', label: '' },
+                  { id: 'actions', label: 'Actions', width: 165 },
                 ]}
               />
               <TableBody>

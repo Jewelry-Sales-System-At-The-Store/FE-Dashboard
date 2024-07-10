@@ -68,7 +68,7 @@ export default function CustomerPage() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('fullName');
 
   const [filterName, setFilterName] = useState('');
 
@@ -80,8 +80,13 @@ export default function CustomerPage() {
     getCustomer();
   },[])
   const getCustomer = async() =>{
-    const res =await axios.get("http://localhost:5188/api/Customer");
-    setCustomer(res.data);
+    const res =await axios.get("http://localhost:5188/api/Customer/GetCustomers", {
+      params: {
+        pageNumber: 1,
+        pageSize: 10,
+      }
+    });
+    setCustomer(res.data.data);
   }
 
   const handleSort = (event, id) => {
@@ -94,7 +99,7 @@ export default function CustomerPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = customer.map((n) => n.name);
+      const newSelecteds = customer.map((n) => n.fullName);
       setSelected(newSelecteds);
       return;
     }
@@ -148,6 +153,7 @@ export default function CustomerPage() {
   const handleNewCustomerClick = (newCustomerData) => {
     const res = axios.post("http://localhost:5188/api/Customer/CreateCustomer", newCustomerData);
     setShowCustomerForm(false);
+    getCustomer();
   };
 
   return (
@@ -187,11 +193,14 @@ export default function CustomerPage() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Name' },
+                  { id: 'userName', label: 'Username' },
+                  { id: 'fullName', label: 'Full Name' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'phone', label: 'Phone' },
+                  { id: 'gender', label: 'Gender' },
                   { id: 'address', label: 'Address' },
-                  { id: 'phoneNumber', label: 'Phone Number' },
                   { id: 'point', label: 'Point' },
-                  { id: ' ', label: ' ' },
+                  { id: 'actions', label: 'Actions', width: 165 },
                 ]}
               />
               <TableBody>
@@ -199,15 +208,17 @@ export default function CustomerPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
-                      CusID={row.id}
-                      name={row.name}
-                      phoneNumber={row.phone}
-                      address={row.address}
-                      point={row.point}
-                      gender={row.gender}
-                      selected={selected.indexOf(row.CusID) !== -1}
-                      handleClick={(event) => handleClick(event, row.CusID)}
+                    key={row.customerId}
+                    CusID={row.customerId}
+                    userName={row.userName}
+                    fullName={row.fullName}
+                    email={row.email}
+                    phone={row.phone}
+                    gender={row.gender}
+                    address={row.address}
+                    point={row.point}
+                    selected={selected.indexOf(row.fullName) !== -1}
+                    handleClick={(event) => handleClick(event, row.fullName)}
                     />
                   ))}
 

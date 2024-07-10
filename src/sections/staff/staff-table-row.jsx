@@ -1,3 +1,5 @@
+// staff-table-row.jsx
+
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,7 +9,7 @@ import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import { Grid, Button, Dialog, Typography ,DialogTitle, DialogContent ,DialogActions } from '@mui/material';
+import { Grid, Button, Dialog, Typography, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -19,14 +21,17 @@ import StaffDeleteForm from './staff-del-modal';
 
 export default function UserTableRow({
   selected,
-  staffId,
-  userName,
+  userId,
+  username,
+  fullName,
   email,
-  password,
-  roleId,
-  counterId,
-  handleClick,
+  gender,
+  phoneNumber,
+  roleName,
   status,
+  handleClick,
+  onEdit,
+  onDelete,
 }) {
   const [open, setOpen] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,6 +64,7 @@ export default function UserTableRow({
   };
 
   const onSubmit = (updatedData) => {
+    onEdit(updatedData);
     handleEditClose();
   };
 
@@ -72,7 +78,8 @@ export default function UserTableRow({
     handleCloseMenu();
   };
 
-  const onDelete = () => {
+  const onDeleteConfirm = () => {
+    onDelete(userId);
     handleDeleteClose();
   };
 
@@ -83,12 +90,19 @@ export default function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell>{userName}</TableCell>
+        <TableCell>{username}</TableCell>
+        <TableCell>{fullName}</TableCell>
         <TableCell>{email}</TableCell>
-        <TableCell>{password}</TableCell>
-        <TableCell>{roleId}</TableCell>
+        <TableCell>{gender}</TableCell>
+        <TableCell>{phoneNumber}</TableCell>
         <TableCell>
-          <Label color={(status === 'inactive' && 'error') || 'success'}>{status}</Label>
+          <Label color={(roleName === 'Admin' && 'primary') || (roleName === 'Staff' && 'secondary') || 'success'}>{roleName}</Label>
+        </TableCell>
+        <TableCell>
+          <Chip
+            label={status ? 'Active' : 'Inactive'}
+            style={{ backgroundColor: status ? 'green' : 'red', color: 'white' }}
+          />
         </TableCell>
 
         <TableCell align='right'>
@@ -107,31 +121,40 @@ export default function UserTableRow({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h6">ID:</Typography>
-              <Typography>{staffId}</Typography>
+              <Typography>{userId}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">User Name:</Typography>
-              <Typography>{userName}</Typography>
+              <Typography>{username}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Counter ID:</Typography>
-              <Typography>{counterId}</Typography>
+              <Typography variant="h6">Full Name:</Typography>
+              <Typography>{fullName}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Email:</Typography>
               <Typography>{email}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Password:</Typography>
-              <Typography>{password}</Typography>
+              <Typography variant="h6">Gender:</Typography>
+              <Typography>{gender}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Role ID:</Typography>
-              <Typography>{roleId}</Typography>
+              <Typography variant="h6">Phone Number:</Typography>
+              <Typography>{phoneNumber}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Role Name:</Typography>
+              <Label color={(roleName === 'Admin' && 'primary') || (roleName === 'Staff' && 'secondary') || 'success'}>{roleName}</Label>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Status:</Typography>
-              <Typography><Label color={(status === 'inactive' && 'error') || 'success'}>{status}</Label></Typography>
+              <Typography>
+                <Chip
+                  label={status ? 'Active' : 'Inactive'}
+                  style={{ backgroundColor: status ? 'green' : 'red', color: 'white' }}
+                />
+              </Typography>
             </Grid>
           </Grid>
         </DialogContent>
@@ -167,12 +190,13 @@ export default function UserTableRow({
         open={editOpen}
         onClose={handleEditClose}
         staff={{
-          staffId,
-          userName,
+          userId,
+          username,
+          fullName,
           email,
-          password,
-          roleId,
-          counterId,
+          gender,
+          phoneNumber,
+          roleName,
           status
         }}
         onSubmit={onSubmit}
@@ -181,14 +205,15 @@ export default function UserTableRow({
       <StaffDeleteForm
         open={deleteOpen}
         onClose={handleDeleteClose}
-        onDelete={onDelete}
+        onDelete={onDeleteConfirm}
         staff={{
-          staffId,
-          userName,
+          userId,
+          username,
+          fullName,
           email,
-          password,
-          roleId,
-          counterId,
+          gender,
+          phoneNumber,
+          roleName,
           status
         }}
       />
@@ -197,13 +222,16 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
-  staffId: PropTypes.string,
-  userName: PropTypes.string,
+  userId: PropTypes.string,
+  username: PropTypes.string,
+  fullName: PropTypes.string,
   email: PropTypes.string,
-  password: PropTypes.string,
+  gender: PropTypes.string,
+  phoneNumber: PropTypes.string,
+  roleName: PropTypes.string,
+  status: PropTypes.bool,
   handleClick: PropTypes.func,
-  roleId: PropTypes.string,
-  counterId: PropTypes.number,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
   selected: PropTypes.any,
-  status: PropTypes.string,
 };
