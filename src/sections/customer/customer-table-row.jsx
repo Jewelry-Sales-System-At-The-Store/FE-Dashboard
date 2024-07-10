@@ -20,17 +20,18 @@ import Iconify from 'src/components/iconify';
 import CustomerEditForm from './customer-edit-model';
 import CustomerDeleteForm from './customer-del-model';
 
-
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
   CusID,
-  name,
-  address,
-  phoneNumber,
-  point,
+  userName,
+  fullName,
+  email,
+  phone,
   gender,
+  address,
+  point,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -88,21 +89,23 @@ export default function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
         </TableCell>
 
-        <TableCell>{name}</TableCell>
-
+        <TableCell>{userName}</TableCell>
+        <TableCell>{fullName}</TableCell>
+        <TableCell>{email}</TableCell>
+        <TableCell>{phone}</TableCell>
+        <TableCell>{gender}</TableCell>
         <TableCell>{address}</TableCell>
-
-        <TableCell>{phoneNumber}</TableCell>
-
-        <TableCell> {point} </TableCell>
+        <TableCell>{point}</TableCell>
 
         <TableCell align="right">
-          <Button variant="outlined" onClick={handleDialogOpen}>
-            More Info
-          </Button>
-          <IconButton onClick={handleOpenMenu}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button variant="outlined" onClick={handleDialogOpen}>
+              More Info
+            </Button>
+            <IconButton onClick={handleOpenMenu}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </div>
         </TableCell>
       </TableRow>
 
@@ -111,24 +114,32 @@ export default function UserTableRow({
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="h6">Name:</Typography>
-              <Typography>{name}</Typography>
+              <Typography variant="h6">Username:</Typography>
+              <Typography>{userName}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Full Name:</Typography>
+              <Typography>{fullName}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Email:</Typography>
+              <Typography>{email}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Phone:</Typography>
+              <Typography>{phone}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6">Gender:</Typography>
+              <Typography>{gender}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Address:</Typography>
               <Typography>{address}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6">Phone Number:</Typography>
-              <Typography>{phoneNumber}</Typography>
-            </Grid>
-            <Grid item xs={12}>
               <Typography variant="h6">Point:</Typography>
               <Typography>{point}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6">Gender:</Typography>
-              <Typography>{gender}</Typography>
             </Grid>
           </Grid>
         </DialogContent>
@@ -138,7 +149,6 @@ export default function UserTableRow({
           </Button>
         </DialogActions>
       </Dialog>
-
 
       <Popover
         open={!!open}
@@ -164,7 +174,7 @@ export default function UserTableRow({
       <CustomerEditForm
         open={editOpen}
         onClose={handleEditClose}
-        customer={{ CusID, name, address, phoneNumber, point, gender, }}
+        customer={{ CusID, userName, fullName, email, phone, gender, address, point }}
         onSubmit={onSubmit}
       />
 
@@ -172,20 +182,21 @@ export default function UserTableRow({
         open={deleteOpen}
         onClose={handleDeleteClose}
         onDelete={onDelete}
-        customer={{ CusID, name, address, phoneNumber, point, gender, }}
+        customer={{ CusID, userName, fullName, email, phone, gender, address, point }}
       />
-
     </>
   );
 }
 
 UserTableRow.propTypes = {
   CusID: PropTypes.any,
-  gender: PropTypes.any,
-  address: PropTypes.any,
-  handleClick: PropTypes.func,
+  userName: PropTypes.string,
+  fullName: PropTypes.string,
+  email: PropTypes.string,
+  phone: PropTypes.string,
+  gender: PropTypes.string,
+  address: PropTypes.string,
   point: PropTypes.any,
-  name: PropTypes.any,
-  phoneNumber: PropTypes.any,
-  selected: PropTypes.any,
+  handleClick: PropTypes.func,
+  selected: PropTypes.bool,
 };
