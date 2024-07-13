@@ -9,7 +9,15 @@ import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import { Grid, Button, Dialog, Typography, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
+import {
+  Grid,
+  Button,
+  Dialog,
+  Typography,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
@@ -96,16 +104,21 @@ export default function UserTableRow({
         <TableCell>{gender}</TableCell>
         <TableCell>{phoneNumber}</TableCell>
         <TableCell>
-          <Label color={(roleName === 'Admin' && 'primary') || (roleName === 'Staff' && 'secondary') || 'success'}>{roleName}</Label>
+          <Label
+            color={
+              (roleName === 'Admin' && 'primary') ||
+              (roleName === 'Staff' && 'secondary') ||
+              'success'
+            }
+          >
+            {roleName}
+          </Label>
         </TableCell>
         <TableCell>
-          <Chip
-            label={status ? 'Active' : 'Inactive'}
-            style={{ backgroundColor: status ? 'green' : 'red', color: 'white' }}
-          />
+          <Label color={status ? 'success' : 'error'}>{status ? 'active' : 'inactive'}</Label>
         </TableCell>
 
-        <TableCell align='right'>
+        <TableCell align="right">
           <Button variant="outlined" onClick={handleDialogOpen}>
             More Info
           </Button>
@@ -145,23 +158,26 @@ export default function UserTableRow({
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Role Name:</Typography>
-              <Label color={(roleName === 'Admin' && 'primary') || (roleName === 'Staff' && 'secondary') || 'success'}>{roleName}</Label>
+              <Label
+                color={
+                  (roleName === 'Admin' && 'primary') ||
+                  (roleName === 'Staff' && 'secondary') ||
+                  'success'
+                }
+              >
+                {roleName}
+              </Label>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Status:</Typography>
               <Typography>
-                <Chip
-                  label={status ? 'Active' : 'Inactive'}
-                  style={{ backgroundColor: status ? 'green' : 'red', color: 'white' }}
-                />
+                <Label color={status ? 'success' : 'error'}>{status ? 'active' : 'inactive'}</Label>
               </Typography>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>
-            Close
-          </Button>
+          <Button onClick={handleDialogClose}>Close</Button>
         </DialogActions>
       </Dialog>
 
@@ -197,7 +213,7 @@ export default function UserTableRow({
           gender,
           phoneNumber,
           roleName,
-          status
+          status,
         }}
         onSubmit={onSubmit}
       />
@@ -214,7 +230,7 @@ export default function UserTableRow({
           gender,
           phoneNumber,
           roleName,
-          status
+          status,
         }}
       />
     </>

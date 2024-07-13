@@ -9,28 +9,28 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import { InputLabel, FormControl, Select, MenuItem } from '@mui/material';
 
-function StaffEditForm({ open, onClose, onSubmit, staff }) {
+function UserEditForm({ open, onClose, onSubmit, user }) {
     const [formState, setFormState] = useState({
         username: '',
         fullName: '',
         email: '',
         gender: '',
-        password: '',
-        roleId: ''
+        status: false,
+        roleId: 1
     });
 
     useEffect(() => {
-        if (staff) {
+        if (user) {
             setFormState({
-                username: staff.username,
-                fullName: staff.fullName,
-                email: staff.email,
-                gender: staff.gender,
-                password: staff.password,
-                roleId: staff.roleId
+                username: user.username,
+                fullName: user.fullName,
+                email: user.email,
+                gender: user.gender,
+                status: user.status,
+                roleId: user.roleId
             });
         }
-    }, [staff]);
+    }, [user]);
 
     const handleChange = (event) => {
         setFormState({ ...formState, [event.target.name]: event.target.value });
@@ -38,13 +38,13 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSubmit({ ...formState, userId: staff.userId });
+        onSubmit(user.userId, formState); // Assuming userId is the unique identifier
         onClose();
     };
 
     return (
         <Dialog open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Edit Staff</DialogTitle>
+            <DialogTitle id="form-dialog-title">Edit User</DialogTitle>
             <DialogContent>
                 <TextField
                     margin="dense"
@@ -82,15 +82,6 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
                     value={formState.gender}
                     onChange={handleChange}
                 />
-                <TextField
-                    margin="dense"
-                    name="password"
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    value={formState.password}
-                    onChange={handleChange}
-                />
                 <FormControl fullWidth margin="dense">
                     <InputLabel id="role-label">Role ID</InputLabel>
                     <Select
@@ -100,8 +91,22 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
                         value={formState.roleId}
                         onChange={handleChange}
                     >
-                        <MenuItem value="2">Manager</MenuItem>
-                        <MenuItem value="3">Staff</MenuItem>
+                        <MenuItem value={1}>Admin</MenuItem>
+                        <MenuItem value={2}>Manager</MenuItem>
+                        <MenuItem value={3}>Staff</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth margin="dense">
+                    <InputLabel id="status-label">Status</InputLabel>
+                    <Select
+                        labelId="status-label"
+                        name="status"
+                        label="Status"
+                        value={formState.status}
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={true}>Active</MenuItem>
+                        <MenuItem value={false}>Inactive</MenuItem>
                     </Select>
                 </FormControl>
             </DialogContent>
@@ -113,19 +118,19 @@ function StaffEditForm({ open, onClose, onSubmit, staff }) {
     );
 }
 
-StaffEditForm.propTypes = {
+UserEditForm.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    staff: PropTypes.shape({
-        userId: PropTypes.string,
+    user: PropTypes.shape({
+        userId: PropTypes.string.isRequired,
         username: PropTypes.string,
         fullName: PropTypes.string,
         email: PropTypes.string,
         gender: PropTypes.string,
-        password: PropTypes.string,
-        roleId: PropTypes.string
-    })
+        status: PropTypes.bool,
+        roleId: PropTypes.number,
+    }).isRequired,
 };
 
-export default StaffEditForm;
+export default UserEditForm;
