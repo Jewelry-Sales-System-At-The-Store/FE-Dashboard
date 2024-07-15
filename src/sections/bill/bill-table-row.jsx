@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import Popover from '@mui/material/Popover';
+//import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
-import MenuItem from '@mui/material/MenuItem';
+//import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
-import IconButton from '@mui/material/IconButton';
+//import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Iconify from 'src/components/iconify';
+//import Iconify from 'src/components/iconify';
 import BillDetailsDialog from './bill-details-dialog';
 
 export default function BillTableRow({ selected, bill, handleClick }) {
-  const [open, setOpen] = useState(null);
+  //const [open, setOpen] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
+  // const handleOpenMenu = (event) => {
+  //   setOpen(event.currentTarget);
+  // };
 
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
+  // const handleCloseMenu = () => {
+  //   setOpen(null);
+  // };
 
   const handleDetailsClose = () => {
     setShowDetails(false);
@@ -39,7 +39,7 @@ export default function BillTableRow({ selected, bill, handleClick }) {
         <TableCell>{bill.staffName}</TableCell>
         <TableCell>{bill.customerName}</TableCell>
         <TableCell>{bill.totalAmount}</TableCell>
-        <TableCell>{bill.totalDiscount}</TableCell>
+        <TableCell>{bill.totalDiscount} %</TableCell>
         <TableCell>{new Date(bill.saleDate).toLocaleString()}</TableCell>
         <TableCell>{bill.items.map(item => item.name).join(', ')}</TableCell>
         <TableCell>{bill.finalAmount}</TableCell>

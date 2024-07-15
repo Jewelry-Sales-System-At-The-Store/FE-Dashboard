@@ -25,7 +25,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material';
 import { staff } from 'src/_mock/staff';
 import { customer } from 'src/_mock/customer';
 import { fetchAllJew } from 'src/_mock/jewellery';
-import Iconify from 'src/components/iconify';
+//import Iconify from 'src/components/iconify';
 import { promotion } from 'src/_mock/promotion';
 import InvoicePreviewDialog from './bill-preview-dialog';
 // import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';

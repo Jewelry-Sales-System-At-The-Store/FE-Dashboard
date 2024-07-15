@@ -91,7 +91,7 @@ function UserEditForm({ open, onClose, onSubmit, user }) {
                         value={formState.roleId}
                         onChange={handleChange}
                     >
-                        <MenuItem value={1}>Admin</MenuItem>
+                        {/* <MenuItem value={1}>Admin</MenuItem> */}
                         <MenuItem value={2}>Manager</MenuItem>
                         <MenuItem value={3}>Staff</MenuItem>
                     </Select>

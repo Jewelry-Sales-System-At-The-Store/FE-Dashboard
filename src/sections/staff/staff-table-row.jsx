@@ -107,7 +107,8 @@ export default function UserTableRow({
           <Label
             color={
               (roleName === 'Admin' && 'primary') ||
-              (roleName === 'Staff' && 'secondary') ||
+              (roleName === 'Manager' && 'secondary') ||
+              (roleName === 'Staff' && 'info') ||
               'success'
             }
           >
@@ -161,7 +162,8 @@ export default function UserTableRow({
               <Label
                 color={
                   (roleName === 'Admin' && 'primary') ||
-                  (roleName === 'Staff' && 'secondary') ||
+                  (roleName === 'Manager' && 'secondary') ||
+                  (roleName === 'Staff' && 'info') ||
                   'success'
                 }
               >

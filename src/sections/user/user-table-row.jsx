@@ -72,11 +72,11 @@ export default function UserTableRow({ userData, selected, handleClick, onDelete
           <Button variant="outline-primary" onClick={handleShow}>
             More Info
           </Button>
-          {userData.roleName !== 'Admin' && (
+          {/* {userData.roleName !== 'Admin' && ( */}
             <IconButton onClick={handleOpenMenu}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
-          )}
+          {/* )} */}
         </TableCell>
       </TableRow>
 
@@ -95,6 +95,7 @@ export default function UserTableRow({ userData, selected, handleClick, onDelete
             handleCloseMenu();
             handleShowEd();
           }}
+          disabled={userData.roleName === 'Admin'}
         >
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
@@ -106,6 +107,7 @@ export default function UserTableRow({ userData, selected, handleClick, onDelete
             handleShowDel();
           }}
           sx={{ color: 'error.main' }}
+          disabled={userData.roleName === 'Admin'}
         >
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
