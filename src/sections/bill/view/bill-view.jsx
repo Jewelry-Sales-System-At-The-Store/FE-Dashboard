@@ -1,5 +1,5 @@
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -9,59 +9,68 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-import { bill, addBill } from 'src/_mock/bill';
-
-import Iconify from 'src/components/iconify';
+//import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-
 import TableNoData from '../table-no-data';
-import UserTableRow from '../bill-table-row';
-import UserTableHead from '../bill-table-head';
+import BillTableRow from '../bill-table-row';
+import BillTableHead from '../bill-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import UserTableToolbar from '../bill-table-toolbar';
+import BillTableToolbar from '../bill-table-toolbar';
+import BillDetailsDialog from '../bill-details-dialog';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import InvoiceTemplate from '../bill-form';
 
 // ----------------------------------------------------------------------
 
 export default function BillPage() {
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [bills, setBills] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [selectedBill, setSelectedBill] = useState(null);
 
-  const [showBillForm, setShowBillForm] = useState(false);
+  useEffect(() => {
+    fetchBills(page + 1, rowsPerPage);
+  }, [page, rowsPerPage]);
+
+  const fetchBills = async (pageNumber, pageSize) => {
+    try {
+      const response = await axios.get(`http://localhost:5188/api/Bill/GetBills`, {
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      });
+      setBills(response.data.data);
+      setTotalRecords(response.data.totalRecord);
+    } catch (error) {
+      console.error('Error fetching bills: ', error);
+    }
+  };
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    }
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(id);
   };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = bill.map((n) => n.name);
+      const newSelecteds = bills.map((n) => n.billId);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, billId) => {
+    const selectedIndex = selected.indexOf(billId);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, billId);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -80,8 +89,8 @@ export default function BillPage() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleFilterByName = (event) => {
@@ -89,41 +98,30 @@ export default function BillPage() {
     setFilterName(event.target.value);
   };
 
+  const handleMoreInfoClick = (bill) => {
+    setSelectedBill(bill);
+  };
+
+  const handleCloseBillDetails = () => {
+    setSelectedBill(null);
+  };
+
   const dataFiltered = applyFilter({
-    inputData: bill,
+    inputData: bills,
     comparator: getComparator(order, orderBy),
     filterName,
   });
 
-  console.log('dataFiltered:', dataFiltered);
-
   const notFound = !dataFiltered.length && !!filterName;
-
-  const handleCloseBillForm = () => {
-    setShowBillForm(false);
-  };
-
-  const handleNewBillClick = (newBillData) => {
-    addBill(newBillData);
-    setShowBillForm(true);
-  };
 
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Bill</Typography>
-
-        <Button
-          onClick={() => setShowBillForm(true)}
-          variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Bill
-        </Button>
-
-        <InvoiceTemplate open={showBillForm} onClose={handleCloseBillForm} />
       </Stack>
 
       <Card>
-        <UserTableToolbar
+        <BillTableToolbar
           numSelected={selected.length}
           filterName={filterName}
           onFilterName={handleFilterByName}
@@ -132,41 +130,40 @@ export default function BillPage() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <UserTableHead
+              <BillTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={bill.length}
+                rowCount={bills.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'billId', label: 'BillId' },
-                  { id: 'customerId', label: 'CustomerId' },
-                  { id: 'staffId', label: 'StaffId' },
-                  { id: 'totalAmount', label: 'TotalAmount' },
-                  { id: 'saleDate', label: 'SaleDate' },
+                  { id: 'staffName', label: 'Staff Name' },
+                  { id: 'customerName', label: 'Customer Name' },
+                  { id: 'totalAmount', label: 'Total Amount' },
+                  { id: 'totalDiscount', label: 'Total Discount' },
+                  { id: 'saleDate', label: 'Sale Date' },
+                  { id: 'items', label: 'Items' },
+                  { id: 'finalAmount', label: 'Final Amount' },
                   { id: '' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      billId={row.billId}
-                      staffId={row.staffId}
-                      customerId={row.customerId}
-                      totalAmount={row.totalAmount}
-                      saleDate={row.saleDate}
-                      selected={selected.indexOf(row.billId) !== -1}
-                      handleClick={(event) => handleClick(event, row.billId)}
+                  .map((bill) => (
+                    <BillTableRow
+                      key={bill.id}
+                      bill={bill}
+                      selected={selected.indexOf(bill.billId) !== -1}
+                      handleClick={(event) => handleClick(event, bill.billId)}
+                      onMoreInfoClick={handleMoreInfoClick}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, bill.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, bills.length)}
                 />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -178,13 +175,21 @@ export default function BillPage() {
         <TablePagination
           page={page}
           component="div"
-          count={bill.length}
+          count={totalRecords}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      {selectedBill && (
+        <BillDetailsDialog
+          open={!!selectedBill}
+          onClose={handleCloseBillDetails}
+          bill={selectedBill}
+        />
+      )}
     </Container>
   );
 }

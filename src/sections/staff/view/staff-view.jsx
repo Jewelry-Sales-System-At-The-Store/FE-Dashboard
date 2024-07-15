@@ -31,7 +31,7 @@ export default function StaffView() {
         const fetchStaff = async () => {
             try {
                 const response = await axios.get('http://localhost:5188/api/User/GetUsers');
-                const filteredStaff = response.data.filter(user => user.roleName === 'Staff');
+                const filteredStaff = response.data.filter(user => user.roleName === 'Staff' || user.roleName === 'Manager');
                 setStaff(filteredStaff);
             } catch (error) {
                 console.error('Error fetching staff:', error);

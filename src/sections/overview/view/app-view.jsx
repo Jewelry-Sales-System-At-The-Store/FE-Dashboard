@@ -24,10 +24,10 @@ export default function AppView() {
           <RevenueStats />
         </Grid>
 
-        <Grid xs={12}>
+        {/* <Grid xs={12}>
           <Typography variant="h5" sx={{ mb: 3 }}>Customer Statistics</Typography>
           <CustomerStats />
-        </Grid>
+        </Grid> */}
 
         <Grid xs={12}>
           <Typography variant="h5" sx={{ mb: 3 }}>Product Statistics</Typography>
