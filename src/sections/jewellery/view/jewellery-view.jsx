@@ -1,3 +1,4 @@
+// jewellery-view.jsx
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
@@ -12,8 +13,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import { fetchAllJew} from 'src/_mock/jewellery';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -25,44 +24,38 @@ import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../jew-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-
-
-// ----------------------------------------------------------------------
-
 export default function JewelleryView() {
-
   const [show, setShow] = useState(false);
+  const [jewList, setJewList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [order, setOrder] = useState('asc');
+  const [selected, setSelected] = useState([]);
+  const [orderBy, setOrderBy] = useState('name');
+  const [filterName, setFilterName] = useState('');
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [jewList, setJewList] = useState([]);
-
-  const [page, setPage] = useState(0);
-
-  const [order, setOrder] = useState('asc');
-
-  const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
-
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
   useEffect(() => {
-    getJew();
-  }, [jewList]);
-  
-  const getJew = async () => {
+    getJew(page + 1, rowsPerPage);
+  }, [page, rowsPerPage]);
+
+  const getJew = async (pageNumber, pageSize) => {
     try {
-      const response = await axios.get("http://localhost:5188/api/Jewelry/GetJewelries");
-      setJewList(response.data); // Cập nhật state với dữ liệu từ server
+      const response = await axios.get('http://localhost:5188/api/Jewelry/GetJewelries', {
+        params: {
+          pageNumber,
+          pageSize,
+        },
+      });
+      setJewList(response.data.data); // Cập nhật state với dữ liệu từ server
+      setTotalRecords(response.data.totalRecord);
     } catch (error) {
       console.error('Error fetching jewellery:', error);
     }
   };
-  
 
   const createJew = async (newItem) => {
     try {
@@ -70,47 +63,43 @@ export default function JewelleryView() {
       setJewList([...jewList, newItem]); // Thêm newItem vào danh sách hiện tại
       handleClose();
       toast.success('Create successful !', {
-        position: "bottom-right",
-        theme: "colored",
+        position: 'bottom-right',
+        theme: 'colored',
       });
     } catch (error) {
       console.error('There was an error creating the item:', error);
     }
   };
-  
+
   const deleteJewellery = async (id) => {
     try {
       await axios.delete(`http://localhost:5188/api/Jewelry/DeleteJewelry/${id}`);
       setJewList(jewList.filter((item) => item.id !== id)); // Loại bỏ phần tử đã xóa khỏi danh sách hiện tại
       toast.success('Delete successful !', {
-        position: "bottom-right",
-        theme: "colored",
+        position: 'bottom-right',
+        theme: 'colored',
       });
     } catch (error) {
       console.error('There was an error deleting the item:', error);
     }
   };
+
   const updateJew = async (id, updatedData) => {
     try {
       const response = await axios.put(`http://localhost:5188/api/Jewelry/UpdateJewelry/${id}`, updatedData);
       // Cập nhật state với dữ liệu mới
-      setJewList(prevData =>
-        prevData.map(item => (item.id === id ? updatedData : item))
+      setJewList((prevData) =>
+        prevData.map((item) => (item.id === id ? updatedData : item))
       );
-  
       toast.success('Update successful !', {
-        position: "bottom-right",
-        theme: "colored",
+        position: 'bottom-right',
+        theme: 'colored',
       });
-  
     } catch (error) {
       console.error('Error updating jewellery:', error);
       throw error;
     }
   };
-  
-  
-
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -152,16 +141,14 @@ export default function JewelleryView() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleFilterByName = (event) => {
     setPage(0);
     setFilterName(event.target.value);
   };
-
-
 
   const dataFiltered = applyFilter({
     inputData: jewList,
@@ -170,7 +157,6 @@ export default function JewelleryView() {
   });
 
   const notFound = !dataFiltered.length && !!filterName;
-
 
   return (
     <Container>
@@ -183,15 +169,11 @@ export default function JewelleryView() {
       </Stack>
 
       <Card>
-        <UserTableToolbar
-          numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-        />
+        <UserTableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
+            <Table sx={{ minWidth: 1200 }}>
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
@@ -200,48 +182,34 @@ export default function JewelleryView() {
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Name' },
+                  { id: 'imageUrl', label: 'Image' },
+                  { id: 'name', label: 'Name'},
                   { id: 'type', label: 'Type' },
-                  { id: 'jewelryPrice', label: 'JewelryPrice' },
-                  { id: 'laborCost', label: 'Labor Cost' },
                   { id: 'barcode', label: 'Barcode' },
-                  { id: '' },
-
-
+                  { id: 'isSold', label: 'Sold'},
+                  { id: 'actions', label: 'Actions', width: 165 },
                 ]}
               />
               <TableBody>
-                {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.jewelryId}
-                      id={row.jewelryId}
-                      name={row.name}
-                      goldweight={row.materials && row.materials.length > 0 && row.materials[0].gold ? row.materials[0].gold.goldQuantity : ''}
-                      goldprice={row.materials && row.materials.length > 0 && row.materials[0].gold ? row.materials[0].gold.goldPrice : ''}
-                      goldType={row.materials && row.materials.length > 0 && row.materials[0].gold ? row.materials[0].gold.goldType : ''}
-                      gemType={row.materials && row.materials.length > 0 && row.materials[0].gem ? row.materials[0].gem.gem : ''}
-                      gemweight={row.materials && row.materials.length > 0 && row.materials[0].gem ? row.materials[0].gem.gemQuantity : ''}
-                      gemPrice={row.materials && row.materials.length > 0 && row.materials[0].gem ? row.materials[0].gem.gemPrice : ''}
-                      totalPrice={row.totalPrice}
-                      type={row.type}
-                      barcode={row.barcode}
-                      jewelryPrice={row.jewelryPrice}
-                      gemCost={row.gemCost}
-                      laborCost={row.laborCost}
-                      selected={selected.indexOf(row.name) !== -1}
-                      handleClick={(event) => handleClick(event, row.name)}
-                      onDelete={() => deleteJewellery(row.id)} 
-                      onUpdate={updateJew}
+                {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  <UserTableRow
+                    key={row.jewelryId}
+                    id={row.jewelryId}
+                    name={row.name}
+                    imageUrl={row.imageUrl}
+                    type={row.type}
+                    barcode={row.barcode}
+                    laborCost={row.laborCost}
+                    jewelryPrice={row.jewelryPrice}
+                    isSold={row.isSold}
+                    selected={selected.indexOf(row.name) !== -1}
+                    handleClick={(event) => handleClick(event, row.name)}
+                    onDelete={() => deleteJewellery(row.id)}
+                    onUpdate={updateJew}
+                  />
+                ))}
 
-                    />
-                  ))}
-
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, jewList.length)}
-                />
+                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, jewList.length)} />
 
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>
@@ -252,7 +220,7 @@ export default function JewelleryView() {
         <TablePagination
           page={page}
           component="div"
-          count={jewList.length}
+          count={totalRecords}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
