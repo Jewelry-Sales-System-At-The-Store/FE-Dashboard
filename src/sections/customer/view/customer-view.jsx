@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -10,8 +11,6 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-// import { customer, addCustomer } from 'src/_mock/customer';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -24,70 +23,42 @@ import CustomerForm from '../create-customer-table';
 import UserTableToolbar from '../customer-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-
-
 // ----------------------------------------------------------------------
 
 export default function CustomerPage() {
-  // // Khởi tạo state cho danh sách khách hàng
-  // const [customer, setCustomer] = useState([]);
-
-  // // Sử dụng useEffect để gọi API khi component được mount
-  // useEffect(() => {
-  //   const fetchCustomers = async () => {
-  //     try {
-  //       const response = await fetch('https://65dc58f6e7edadead7ebb035.mockapi.io/authentication/test'); // Thay thế bằng URL của API thực tế
-  //       const data = await response.json();
-
-  //       // Giả sử data là một mảng các đối tượng khách hàng
-  //       const formattedData = data.map((customers, index) => ({
-  //         id: customers.id,
-  //         avatarUrl: customers.avatarUrl || `/assets/images/avatars/avatar_${index + 1}.jpg`,
-  //         name: customers.name,
-  //         address: customers.address,
-  //         point: customers.point || Math.floor(Math.random() * 100) + 1,
-  //         status: customers.status || sample(['active', 'banned']),
-  //         phoneNumber: customers.phoneNumber,
-  //       }));
-  //       console.log("Customer")
-
-  //       setCustomer(formattedData);
-  //     } catch (error) {
-  //       console.error('Error fetching customers:', error);
-  //     }
-  //   };
-
-  //   fetchCustomers();
-  // }, []);
-  
-  const [customer,setCustomer] = useState([]);
-
+  const [customer, setCustomer] = useState([]);
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('fullName');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [showCustomerForm, setShowCustomerForm] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     getCustomer();
-  },[])
-  const getCustomer = async() =>{
-    const res =await axios.get("http://localhost:5188/api/Customer/GetCustomers", {
+  }, []);
+
+  const getCustomer = async () => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       params: {
         pageNumber: 1,
         pageSize: 10,
       }
-    });
-    setCustomer(res.data.data);
-  }
+    };
+
+    try {
+      const res = await axios.get("http://localhost:5188/api/Customer/GetCustomers", config);
+      setCustomer(res.data.data);
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+      toast.error('Failed to fetch customers');
+    }
+  };
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -150,10 +121,23 @@ export default function CustomerPage() {
     setShowCustomerForm(false);
   };
 
-  const handleNewCustomerClick = (newCustomerData) => {
-    const res = axios.post("http://localhost:5188/api/Customer/CreateCustomer", newCustomerData);
-    setShowCustomerForm(false);
-    getCustomer();
+  const handleNewCustomerClick = async (newCustomerData) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    try {
+      await axios.post("http://localhost:5188/api/Customer/CreateCustomer", newCustomerData, config);
+      setShowCustomerForm(false);
+      getCustomer();
+      toast.success('Customer added successfully');
+    } catch (error) {
+      console.error('Error adding customer:', error);
+      toast.error('Failed to add customer');
+    }
   };
 
   return (
@@ -208,17 +192,17 @@ export default function CustomerPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
-                    key={row.customerId}
-                    CusID={row.customerId}
-                    userName={row.userName}
-                    fullName={row.fullName}
-                    email={row.email}
-                    phone={row.phone}
-                    gender={row.gender}
-                    address={row.address}
-                    point={row.point}
-                    selected={selected.indexOf(row.fullName) !== -1}
-                    handleClick={(event) => handleClick(event, row.fullName)}
+                      key={row.customerId}
+                      CusID={row.customerId}
+                      userName={row.userName}
+                      fullName={row.fullName}
+                      email={row.email}
+                      phone={row.phone}
+                      gender={row.gender}
+                      address={row.address}
+                      point={row.point}
+                      selected={selected.indexOf(row.fullName) !== -1}
+                      handleClick={(event) => handleClick(event, row.fullName)}
                     />
                   ))}
 
