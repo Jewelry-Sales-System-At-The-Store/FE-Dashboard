@@ -11,17 +11,27 @@ const ProductStats = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const bestSellingJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelry');
-      setBestSellingJewelry(bestSellingJewelryResponse.data);
+      const token = localStorage.getItem('TOKEN');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      try {
+        const bestSellingJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelry', config);
+        setBestSellingJewelry(bestSellingJewelryResponse.data);
 
-      const bestSellingJewelryTypesResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelryTypes');
-      setBestSellingJewelryTypes(bestSellingJewelryTypesResponse.data);
+        const bestSellingJewelryTypesResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelryTypes', config);
+        setBestSellingJewelryTypes(bestSellingJewelryTypesResponse.data);
 
-      const totalRevenueByJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueByJewelry');
-      setTotalRevenueByJewelry(totalRevenueByJewelryResponse.data);
+        const totalRevenueByJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueByJewelry', config);
+        setTotalRevenueByJewelry(totalRevenueByJewelryResponse.data);
 
-      const totalRevenueByJewelryTypesResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueByJewelryTypes');
-      setTotalRevenueByJewelryTypes(totalRevenueByJewelryTypesResponse.data);
+        const totalRevenueByJewelryTypesResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueByJewelryTypes', config);
+        setTotalRevenueByJewelryTypes(totalRevenueByJewelryTypesResponse.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
     };
 
     fetchData();

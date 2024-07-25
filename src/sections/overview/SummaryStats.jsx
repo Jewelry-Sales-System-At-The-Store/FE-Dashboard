@@ -11,14 +11,20 @@ const SummaryStats = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem('TOKEN');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
       try {
-        const totalRevenueResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueAllTime');
+        const totalRevenueResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalRevenueAllTime', config);
         setTotalRevenue(totalRevenueResponse.data.totalRevenue);
 
-        const totalCustomersResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalCustomers');
+        const totalCustomersResponse = await axios.get('http://localhost:5188/api/Dashboard/TotalCustomers', config);
         setTotalCustomers(totalCustomersResponse.data);
 
-        const bestSellingJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelry');
+        const bestSellingJewelryResponse = await axios.get('http://localhost:5188/api/Dashboard/BestSellingJewelry', config);
         if (bestSellingJewelryResponse.data.length > 0) {
           const bestSelling = bestSellingJewelryResponse.data.reduce((prev, current) => {
             return (prev.purchaseTime > current.purchaseTime) ? prev : current;
