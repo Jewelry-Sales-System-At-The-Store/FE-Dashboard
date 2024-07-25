@@ -12,8 +12,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import { promotion, addPromotion } from 'src/_mock/promotion';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -29,25 +27,17 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 
 export default function PromotionView() {
   const [promotion, setPromotion] = useState([]);
-  console.log("promotion",promotion)
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
   const [showPromotionForm, setShowPromotionForm] = useState(false);
 
   useEffect(() => {
     getPromotion();
-  },[])
+  }, [])
 
   const getPromotion = async () => {
     const res = await axios.get("http://localhost:5188/api/Promotion/GetPromotions");
@@ -115,14 +105,26 @@ export default function PromotionView() {
     setShowPromotionForm(false);
   };
 
-  const handleNewPromotionClick = async (newPromotionData) => {
-    // addPromotion(newPromotionData);
-    const res = await axios.post("http://localhost:5188/api/Promotion/AddNewPromotion", newPromotionData);
-     if(res.data === 1) {
-      toast.success("Create promotion success")
-     }else{
-      toast.error("Create promotion fail")
-     }
+  const handleNewPromotionClick = async (userId, newPromotionData) => {
+    try {
+      const res = await axios.post(`http://localhost:5188/api/Promotion/AddNewPromotion?userId=${userId}`, newPromotionData);
+      // if (res.status === 200) {
+      //   toast.success("Create promotion success");
+      //   setPromotion((prevPromotions) => [...prevPromotions, res.data]);
+      // } else {
+      //   toast.error("Create promotion fail");
+      // }
+      handleClose();
+      toast.success('Create promotion successful!', {
+        position: "bottom-right",
+        theme: "colored",
+      });
+      getPromotion();
+    } catch (error) {
+      toast.error("Create promotion fail");
+      console.error("There was an error creating the promotion:", error);
+    }
+
     setShowPromotionForm(false);
   };
 
@@ -175,7 +177,7 @@ export default function PromotionView() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => (
                     <UserTableRow
-                      key={row.id}
+                      key={row.promotionId}
                       promotionId={row.promotionId}
                       type={row.type}
                       approveManager={row.approveManager}

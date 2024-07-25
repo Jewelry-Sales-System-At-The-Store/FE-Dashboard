@@ -16,13 +16,13 @@ export default function AppView() {
         Hi, Welcome back 👋
       </Typography>
 
-      <SummaryStats />
+      <SummaryStats /> <br/>
 
       <Grid container spacing={3}>
-        <Grid xs={12}>
+        {/* <Grid xs={12}>
           <Typography variant="h5" sx={{ mb: 3 }}>Revenue Statistics</Typography>
           <RevenueStats />
-        </Grid>
+        </Grid> */}
 
         {/* <Grid xs={12}>
           <Typography variant="h5" sx={{ mb: 3 }}>Customer Statistics</Typography>
