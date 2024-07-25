@@ -10,25 +10,26 @@ import DialogContent from '@mui/material/DialogContent';
 
 
 function CustomerEditForm({ open, onClose, onSubmit, customer }) {
-    const [formState, setFormState] = React.useState({
-        CusID: customer ? customer.CusID : '',
-        name: customer ? customer.name : '',
-        address: customer ? customer.address : '',
-        phoneNumber: customer ? customer.phoneNumber : '',
-        point: customer ? customer.point : '',
-        gender: customer ? customer.gender : '',
-    });
+  const [formState, setFormState] = React.useState({
+    userName: customer ? customer.userName : '',
+    fullName: customer ? customer.fullName : '',
+    email: customer ? customer.email : '',
+    phone: customer ? customer.phone : '',
+    gender: customer ? customer.gender : '',
+    address: customer ? customer.address : '',
+    point: customer ? customer.point : 0,
+  });
 
   React.useEffect(() => {
     if (customer) {
       setFormState({
-        CusID: customer.CusID,
-        name: customer.name,
-        address: customer.address,
-        phoneNumber: customer.phoneNumber,
-        point: customer.point,
+        userName: customer.userName,
+        fullName: customer.fullName,
+        email: customer.email,
+        phone: customer.phone,
         gender: customer.gender,
-        
+        address: customer.address,
+        point: customer.point,
       });
     }
   }, [customer]);
@@ -48,65 +49,75 @@ function CustomerEditForm({ open, onClose, onSubmit, customer }) {
       <DialogTitle id="form-dialog-title">Edit Customer</DialogTitle>
       <DialogContent>
         <TextField
-          autoFocus
           margin="dense"
-          name="promotionId"
-          label="Promotion ID"
+          name="userName"
+          label="Username"
+          value={formState.userName}
           type="text"
           fullWidth
           onChange={handleChange}
-          value={formState.CusID}
+          InputProps={{ style: { marginBottom: 10 } }}
         />
         <TextField
-                    margin="dense"
-                    name="name"
-                    label="Name"
-                    value={formState.name}
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    InputProps={{ style: { marginBottom: 10 } }}
-                />
-                <TextField
-                    margin="dense"
-                    name="address"
-                    label="Address"
-                    value={formState.address}
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    InputProps={{ style: { marginBottom: 10 } }}
-                />
-                <TextField
-                    margin="dense"
-                    name="phoneNumber"
-                    label="Phone Number"
-                    value={formState.phoneNumber}
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    InputProps={{ style: { marginBottom: 10 } }}
-                />
-                <TextField
-                    margin="dense"
-                    name="point"
-                    label="Point"
-                    value={formState.point}
-                    type="point"
-                    fullWidth
-                    onChange={handleChange}
-                    InputProps={{ style: { marginBottom: 10 } }}
-                />
-                <TextField
-                    margin="dense"
-                    name="gender"
-                    label="Gender"
-                    value={formState.gender}
-                    type="text"
-                    fullWidth
-                    onChange={handleChange}
-                    InputProps={{ style: { marginBottom: 10 } }}
-                />
+          margin="dense"
+          name="fullName"
+          label="Full Name"
+          value={formState.fullName}
+          type="text"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
+        <TextField
+          margin="dense"
+          name="email"
+          label="Email"
+          value={formState.email}
+          type="text"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
+        <TextField
+          margin="dense"
+          name="phone"
+          label="Phone"
+          value={formState.phone}
+          type="text"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
+        <TextField
+          margin="dense"
+          name="gender"
+          label="Gender"
+          value={formState.gender}
+          type="text"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
+        <TextField
+          margin="dense"
+          name="address"
+          label="Address"
+          value={formState.address}
+          type="text"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
+        <TextField
+          margin="dense"
+          name="point"
+          label="Point"
+          value={formState.point}
+          type="number"
+          fullWidth
+          onChange={handleChange}
+          InputProps={{ style: { marginBottom: 10 } }}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
@@ -121,13 +132,14 @@ CustomerEditForm.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   customer: PropTypes.shape({
-    CusID: PropTypes.any,
-    name: PropTypes.string,
-    address: PropTypes.any,
-    phoneNumber: PropTypes.any,
-    point: PropTypes.number,
+    userName: PropTypes.string,
+    fullName: PropTypes.string,
+    email: PropTypes.string,
+    phone: PropTypes.string,
     gender: PropTypes.string,
+    address: PropTypes.string,
+    point: PropTypes.number,
   }),
 };
 
-export default CustomerEditForm; 
+export default CustomerEditForm;

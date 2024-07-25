@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -64,8 +66,24 @@ export default function UserTableRow({
     setEditOpen(false);
   };
 
-  const onSubmit = (updatedData) => {
-    handleEditClose();
+  const onSubmit = async (updatedData) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    try {
+      const res = await axios.put(`http://localhost:5188/api/Customer/UpdateCustomer/${CusID}`, updatedData, config);
+      if (res.status === 200) {
+        toast.success("Edit customer success");
+        handleEditClose();
+      } else {
+        toast.error('Edit customer failed');
+      }
+    } catch (e) {
+      toast.error('Error response');
+    }
   };
 
   const handleDeleteOpen = () => {
@@ -75,11 +93,26 @@ export default function UserTableRow({
 
   const handleDeleteClose = () => {
     setDeleteOpen(false);
-    handleCloseMenu();
   };
 
-  const onDelete = () => {
-    handleDeleteClose();
+  const onDelete = async () => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    try {
+      const res = await axios.delete(`http://localhost:5188/api/Customer/DeleteCustomer/${CusID}`, config);
+      if (res.status === 200) {
+        toast.success("Delete success");
+        handleDeleteClose();
+      } else {
+        toast.error("Delete failed");
+      }
+    } catch (e) {
+      toast.error("Error response");
+    }
   };
 
   return (

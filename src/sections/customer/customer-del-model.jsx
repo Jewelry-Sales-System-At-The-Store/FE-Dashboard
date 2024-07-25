@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Grid ,Button ,Dialog,Typography ,DialogTitle , DialogContent, DialogActions} from '@mui/material';
+import { Grid, Button, Dialog, Typography, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 export default function CustomerDeleteForm({ open, onClose, onDelete, customer }) {
   const handleDeleteClick = () => {
@@ -19,7 +19,11 @@ export default function CustomerDeleteForm({ open, onClose, onDelete, customer }
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6">Name:</Typography>
-            <Typography>{customer.name}</Typography>
+            <Typography>{customer.fullName}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="h6">Email:</Typography>
+            <Typography>{customer.email}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6">Address:</Typography>
@@ -27,7 +31,7 @@ export default function CustomerDeleteForm({ open, onClose, onDelete, customer }
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6">Phone Number:</Typography>
-            <Typography>{customer.phoneNumber}</Typography>
+            <Typography>{customer.phone}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6">Point:</Typography>
@@ -57,9 +61,10 @@ CustomerDeleteForm.propTypes = {
   onDelete: PropTypes.func.isRequired,
   customer: PropTypes.shape({
     CusID: PropTypes.any,
-    name: PropTypes.string,
-    address: PropTypes.any,
-    phoneNumber: PropTypes.any,
+    fullName: PropTypes.string,
+    email: PropTypes.string,
+    address: PropTypes.string,
+    phone: PropTypes.string,
     point: PropTypes.number,
     gender: PropTypes.string,
   }).isRequired,

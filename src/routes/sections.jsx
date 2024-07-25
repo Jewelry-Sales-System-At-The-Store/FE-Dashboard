@@ -42,7 +42,7 @@ export default function Router() {
         { path: 'staff', element: <Staff /> },
         { path: 'bill', element: <Bill /> },
         { path: 'goldprice', element: <GoldPrice /> },
-        { path: 'dashboard', element: <IndexPage /> },  // Add this line
+        { path: 'dashboard', element: <IndexPage /> },  
       ],
     },
   

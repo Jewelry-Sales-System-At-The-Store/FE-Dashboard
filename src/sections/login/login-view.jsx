@@ -1,7 +1,7 @@
 import { useState } from 'react';
-// import axios from 'axios';
-// import { toast } from "react-toastify";
-// import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
+import { toast } from "react-toastify";
+import { jwtDecode } from 'jwt-decode';
 
 
 import Box from '@mui/material/Box';
@@ -25,9 +25,6 @@ import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 
 
-
-// ----------------------------------------------------------------------
-
 export default function LoginView() {
   const theme = useTheme();
 
@@ -38,27 +35,24 @@ export default function LoginView() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-// comment cho de dang nhap
-  // const handleClick = async() =>{
-  //   try {
-  //     const response = await axios.post("http://localhost:5188/api/User/Login", { email, password });
-  //     localStorage.setItem("TOKEN", response.data.token);
-  //     const token = jwtDecode(response.data.token);
-  //     // localStorage.setItem("ROLE",role)
-  //     if (response.status === 200) {
-  //       router.push('/dashboard');
-  //       toast.success('Bạn đã đăng nhập. Chào mừng đã vào cổng');
-  //     } else {
-  //       toast.error("Error information login");
-  //     }
-  //   } catch (e) {
-  //     toast.error("Error information login response");
-  //   }
-  // }
+  const handleClick = async() =>{
+    try {
+      const response = await axios.post("http://localhost:5188/api/User/Login", { email, password, counterId: "" });
+      const token = response.data.token;
+      localStorage.setItem("TOKEN", token);
+      const decodedToken = jwtDecode(token);
+      
+      if (decodedToken.role === "Admin") {
+        router.push('/dashboard');
+        toast.success('Login successful. Welcome to the dashboard!');
+      } else {
+        toast.error("You do not have the required permissions to access the dashboard.");
+      }
+    } catch (e) {
+      toast.error("Error logging in. Please check your credentials.");
+    }
+  }
 
-  const handleClick = () => {
-    router.push('/dashboard');
-  };
 
   const renderForm = (
     

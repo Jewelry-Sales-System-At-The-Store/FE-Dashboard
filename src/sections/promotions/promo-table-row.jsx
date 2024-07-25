@@ -21,16 +21,11 @@ import Iconify from 'src/components/iconify';
 
 import PromotionEditForm from './promo-edit-modal';
 import PromotionDeleteForm from './promo-del-modal';
-// import { Edit } from '@mui/icons-material';
-
-
-// ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
   promotionId,
   type,
-  approveManager,
   description,
   discountRate,
   startDate,
@@ -67,18 +62,24 @@ export default function UserTableRow({
     setEditOpen(false);
   };
 
-  const onSubmit = async(updatedData) => {
-   try{
-    const res = await axios.put(`http://localhost:5188/api/Promotion/UpdatePromotion?${promotionId}`,updatedData)
-    if (res === 0){
-      toast.success("Edit promotion success");
-    }else{
-      toast.error('Edit promotion fail')
+  const onSubmit = async (updatedData) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    try {
+      const res = await axios.put(`http://localhost:5188/api/Promotion/UpdatePromotion?id=${promotionId}`, updatedData, config);
+      if (res.status === 200) {
+        toast.success("Edit promotion success");
+      } else {
+        toast.error('Edit promotion fail');
+      }
+      handleEditClose();
+    } catch (e) {
+      toast.error('Error response');
     }
-    handleEditClose();
-   }catch(e){
-    toast.error('Error response')
-   }
   };
 
   const handleDeleteOpen = () => {
@@ -91,23 +92,25 @@ export default function UserTableRow({
     handleCloseMenu();
   };
 
-  const onDelete = async() => {
-    try{
-      const res = await axios.delete(`http://localhost:5188/api/Promotion/DeletePromotion?id=${promotionId}`);
-      if(res.data === 1 ){
+  const onDelete = async () => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    try {
+      const res = await axios.delete(`http://localhost:5188/api/Promotion/DeletePromotion?id=${promotionId}`, config);
+      if (res.data === 1) {
         toast.success("Delete success");
-      }else{
-        toast.error("Delete fail")
+      } else {
+        toast.error("Delete fail");
       }
       handleDeleteClose();
-      // window.location.reload();
-    }catch(e){
-      toast.error("error response")
+    } catch (e) {
+      toast.error("Error response");
     }
-   
   };
-
-
 
   return (
     <>
@@ -146,10 +149,6 @@ export default function UserTableRow({
             <Grid item xs={12}>
               <Typography variant="h6">DiscountRate:</Typography>
               <Typography>{`${discountRate}%`}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6">Approval Manager:</Typography>
-              <Typography>{approveManager}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Start Date:</Typography>
@@ -197,7 +196,7 @@ export default function UserTableRow({
       <PromotionEditForm
         open={editOpen}
         onClose={handleEditClose}
-        promotion={{ promotionId, type, discountRate, startDate, endDate, approveManager, description }}
+        promotion={{ promotionId, type, discountRate, startDate, endDate, description }}
         onSubmit={onSubmit}
       />
 
@@ -205,21 +204,19 @@ export default function UserTableRow({
         open={deleteOpen}
         onClose={handleDeleteClose}
         onDelete={onDelete}
-        promotion={{ promotionId, type, discountRate, startDate, endDate, approveManager, description }}
+        promotion={{ promotionId, type, discountRate, startDate, endDate, description }}
       />
     </>
   );
 }
 
 UserTableRow.propTypes = {
- 
   promotionId: PropTypes.any,
   type: PropTypes.string,
-  approveManager: PropTypes.string,
   description: PropTypes.string,
   handleClick: PropTypes.func,
   discountRate: PropTypes.number,
-  startDate: PropTypes.instanceOf(Date),
-  endDate: PropTypes.instanceOf(Date),
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
   selected: PropTypes.any,
 };

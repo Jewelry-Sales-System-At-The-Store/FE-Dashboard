@@ -45,13 +45,25 @@ export default function UserPage() {
   }, [])
 
   const getUser = async () => {
-    const res = await axios.get("http://localhost:5188/api/User/GetUsers");
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    const res = await axios.get("http://localhost:5188/api/User/GetUsers", config);
     setUserList(res.data);
   }
 
   const deleteUser = async (id) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
     try {
-      await axios.delete(`http://localhost:5188/api/User/DeleteUser/${id}`);
+      await axios.delete(`http://localhost:5188/api/User/DeleteUser/${id}`, config);
       setUserList(userList.filter((item) => item.id !== id));
       toast.success('Delete user successful!', {
         position: "bottom-right",
@@ -63,8 +75,14 @@ export default function UserPage() {
   };
 
   const createUser = async (newItem) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
     try {
-      const response = await axios.post('http://localhost:5188/api/User/AddUser', newItem);
+      const response = await axios.post('http://localhost:5188/api/User/AddUser', newItem, config);
       handleClose();
       toast.success('Create user successful!', {
         position: "bottom-right",
@@ -77,8 +95,14 @@ export default function UserPage() {
   }
 
   const updateUser = async (id, updatedData) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
     try {
-      const response = await axios.put(`http://localhost:5188/api/User/UpdateUser/${id}`, updatedData);
+      const response = await axios.put(`http://localhost:5188/api/User/UpdateUser/${id}`, updatedData, config);
       const updatedUser = response.data;
       setUserList(prevData =>
         prevData.map(item => (item.userId === id ? updatedUser : item))

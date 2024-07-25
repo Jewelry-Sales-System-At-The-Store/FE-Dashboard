@@ -40,7 +40,13 @@ export default function PromotionView() {
   }, [])
 
   const getPromotion = async () => {
-    const res = await axios.get("http://localhost:5188/api/Promotion/GetPromotions");
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
+    const res = await axios.get("http://localhost:5188/api/Promotion/GetPromotions", config);
     setPromotion(res.data);
   }
 
@@ -106,8 +112,14 @@ export default function PromotionView() {
   };
 
   const handleNewPromotionClick = async (userId, newPromotionData) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    };
     try {
-      const res = await axios.post(`http://localhost:5188/api/Promotion/AddNewPromotion?userId=${userId}`, newPromotionData);
+      const res = await axios.post(`http://localhost:5188/api/Promotion/AddNewPromotion?userId=${userId}`, newPromotionData, config);
       // if (res.status === 200) {
       //   toast.success("Create promotion success");
       //   setPromotion((prevPromotions) => [...prevPromotions, res.data]);

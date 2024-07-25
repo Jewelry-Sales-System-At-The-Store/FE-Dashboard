@@ -43,7 +43,13 @@ export default function GoldPriceView() {
     getGoldprice();
   }, [])
   const getGoldprice = async () => {
-    const res = await axios.get("http://localhost:5188/api/Price/GetGoldPrices");
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    const res = await axios.get("http://localhost:5188/api/Price/GetGoldPrices", config);
     setGoldprice(res.data);
   }
 

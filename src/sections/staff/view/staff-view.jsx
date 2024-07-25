@@ -29,8 +29,14 @@ export default function StaffView() {
 
     useEffect(() => {
         const fetchStaff = async () => {
+            const token = localStorage.getItem('TOKEN');
+            const config = {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            };
             try {
-                const response = await axios.get('http://localhost:5188/api/User/GetUsers');
+                const response = await axios.get('http://localhost:5188/api/User/GetUsers', config);
                 const filteredStaff = response.data.filter(user => user.roleName === 'Staff' || user.roleName === 'Manager');
                 setStaff(filteredStaff);
             } catch (error) {
@@ -41,8 +47,14 @@ export default function StaffView() {
     }, []);
 
     const handleAddStaff = async (newStaffData) => {
+        const token = localStorage.getItem('TOKEN');
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
         try {
-            const response = await axios.post('http://localhost:5188/api/User/AddUser', newStaffData);
+            const response = await axios.post('http://localhost:5188/api/User/AddUser', newStaffData, config);
             setStaff([...staff, response.data]);
             enqueueSnackbar('Staff added successfully', { variant: 'success' });
         } catch (error) {
@@ -52,8 +64,14 @@ export default function StaffView() {
     };
 
     const handleEditStaff = async (updatedStaffData) => {
+        const token = localStorage.getItem('TOKEN');
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
         try {
-            await axios.put(`http://localhost:5188/api/User/UpdateUser/${updatedStaffData.userId}`, updatedStaffData);
+            await axios.put(`http://localhost:5188/api/User/UpdateUser/${updatedStaffData.userId}`, updatedStaffData, config);
             setStaff(staff.map(st => (st.userId === updatedStaffData.userId ? updatedStaffData : st)));
             enqueueSnackbar('Staff updated successfully', { variant: 'success' });
         } catch (error) {
@@ -63,8 +81,14 @@ export default function StaffView() {
     };
 
     const handleDeleteStaff = async (userId) => {
+        const token = localStorage.getItem('TOKEN');
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
         try {
-            await axios.delete(`http://localhost:5188/api/User/DeleteUser/${userId}`);
+            await axios.delete(`http://localhost:5188/api/User/DeleteUser/${userId}`, config);
             setStaff(staff.filter(st => st.userId !== userId));
             enqueueSnackbar('Staff deleted successfully', { variant: 'success' });
         } catch (error) {
