@@ -3,7 +3,7 @@ import axios from 'axios';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -37,8 +37,14 @@ export default function BillPage() {
   }, [page, rowsPerPage]);
 
   const fetchBills = async (pageNumber, pageSize) => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
     try {
-      const response = await axios.get(`http://localhost:5188/api/Bill/GetBills`, {
+      const response = await axios.get(`http://localhost:5188/api/Bill/GetBills`, config, {
         params: {
           pageNumber,
           pageSize,
