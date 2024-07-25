@@ -26,10 +26,6 @@ export default function PromotionDeleteForm({ open, onClose, onDelete, promotion
             <Typography>{`${promotion.discountRate}%`}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h6">Approval Manager:</Typography>
-            <Typography>{promotion.approveManager}</Typography>
-          </Grid>
-          <Grid item xs={12}>
             <Typography variant="h6">Start Date:</Typography>
             <Typography>{promotion.startDate}</Typography>
           </Grid>
@@ -62,10 +58,9 @@ PromotionDeleteForm.propTypes = {
   promotion: PropTypes.shape({
     promotionId: PropTypes.any,
     type: PropTypes.string,
-    approveManager: PropTypes.string,
     description: PropTypes.string,
     discountRate: PropTypes.number,
-    startDate: PropTypes.instanceOf(Date),
-    endDate: PropTypes.instanceOf(Date),
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
   }).isRequired,
 };

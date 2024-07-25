@@ -14,12 +14,9 @@ function PromotionEditForm({ open, onClose, onSubmit, promotion }) {
     discountRate: promotion ? promotion.discountRate : '',
     startDate: promotion.startDate ? new Date(promotion.startDate).toISOString().split('T')[0] : '',
     endDate:promotion.endDate ? new Date(promotion.endDate).toISOString().split('T')[0] : '',
-    approveManager: promotion ? promotion.approveManager : '',
     description: promotion ? promotion.description : '',
   });
 
-  console.log('promotion', promotion);
-  console.log('formState', formState);
   React.useEffect(() => {
     if (promotion) {
       setFormState({
@@ -27,7 +24,6 @@ function PromotionEditForm({ open, onClose, onSubmit, promotion }) {
         discountRate: promotion.discountRate,
         startDate: promotion.startDate ? new Date(promotion.startDate).toISOString().split('T')[0] : '',
         endDate: promotion.endDate ? new Date(promotion.endDate).toISOString().split('T')[0] : '',
-        approveManager: promotion.approveManager,
         description: promotion.description,
       });
     }
@@ -89,16 +85,6 @@ function PromotionEditForm({ open, onClose, onSubmit, promotion }) {
         />
         <TextField
           margin="dense"
-          name="approveManager"
-          label="Approval Manager"
-          value={formState.approveManager}
-          type="text"
-          fullWidth
-          onChange={handleChange}
-          InputProps={{ style: { marginBottom: 10 } }}
-        />
-        <TextField
-          margin="dense"
           name="description"
           label="Description"
           value={formState.description}
@@ -126,7 +112,6 @@ PromotionEditForm.propTypes = {
     discountRate: PropTypes.number,
     startDate: PropTypes.string,
     endDate: PropTypes.string,
-    approveManager: PropTypes.string,
     description: PropTypes.string,
   }),
 };
