@@ -67,6 +67,11 @@ const navConfig = [
     path: '/goldprice',
     icon: icon('ic_goldprice'),
   },
+  {
+    title: 'Logout',
+    path: '/login',
+    icon: icon('ic_logout'),
+  },
 ];
 
 export default navConfig;
