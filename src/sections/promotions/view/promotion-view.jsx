@@ -34,21 +34,39 @@ export default function PromotionView() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [showPromotionForm, setShowPromotionForm] = useState(false);
+  const [managers, setManagers] = useState([]);
 
   useEffect(() => {
     getPromotion();
-  }, [])
+    fetchManagers();
+  }, []);
 
   const getPromotion = async () => {
     const token = localStorage.getItem('TOKEN');
     const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     };
-    const res = await axios.get("http://localhost:5188/api/Promotion/GetPromotions", config);
+    const res = await axios.get('http://localhost:5188/api/Promotion/GetPromotions', config);
     setPromotion(res.data);
-  }
+  };
+
+  const fetchManagers = async () => {
+    const token = localStorage.getItem('TOKEN');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await axios.get('http://localhost:5188/api/User/GetUsers', config);
+      const managerData = response.data.filter((user) => user.roleName === 'Manager');
+      setManagers(managerData);
+    } catch (error) {
+      console.error('Error fetching managers:', error);
+    }
+  };
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -77,10 +95,7 @@ export default function PromotionView() {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
@@ -111,32 +126,28 @@ export default function PromotionView() {
     setShowPromotionForm(false);
   };
 
-  const handleNewPromotionClick = async (userId, newPromotionData) => {
+  const handleNewPromotionClick = async (newPromotionData) => {
     const token = localStorage.getItem('TOKEN');
     const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     };
     try {
-      const res = await axios.post(`http://localhost:5188/api/Promotion/AddNewPromotion?userId=${userId}`, newPromotionData, config);
-      // if (res.status === 200) {
-      //   toast.success("Create promotion success");
-      //   setPromotion((prevPromotions) => [...prevPromotions, res.data]);
-      // } else {
-      //   toast.error("Create promotion fail");
-      // }
-      handleClose();
+      const res = await axios.post(
+        `http://localhost:5188/api/Promotion/AddNewPromotion?userId=${newPromotionData.userId}`,
+        newPromotionData,
+        config
+      );
       toast.success('Create promotion successful!', {
-        position: "bottom-right",
-        theme: "colored",
+        position: 'bottom-right',
+        theme: 'colored',
       });
       getPromotion();
     } catch (error) {
-      toast.error("Create promotion fail");
-      console.error("There was an error creating the promotion:", error);
+      toast.error('Create promotion fail');
+      console.error('There was an error creating the promotion:', error);
     }
-
     setShowPromotionForm(false);
   };
 
@@ -155,8 +166,11 @@ export default function PromotionView() {
         </Button>
       </Stack>
 
-      <PromotionForm open={showPromotionForm} onClose={handleClosePromotionForm}
+      <PromotionForm
+        open={showPromotionForm}
+        onClose={handleClosePromotionForm}
         onSubmit={handleNewPromotionClick}
+        managers={managers} // Pass managers to the form
       />
 
       <Card>
@@ -187,12 +201,12 @@ export default function PromotionView() {
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,index) => (
+                  .map((row, index) => (
                     <UserTableRow
                       key={row.promotionId}
                       promotionId={row.promotionId}
                       type={row.type}
-                      approveManager={row.approveManager}
+                      userId={row.userId}
                       description={row.description}
                       discountRate={row.discountRate}
                       startDate={row.startDate}
@@ -202,10 +216,7 @@ export default function PromotionView() {
                     />
                   ))}
 
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, promotion.length)}
-                />
+                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, promotion.length)} />
 
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>

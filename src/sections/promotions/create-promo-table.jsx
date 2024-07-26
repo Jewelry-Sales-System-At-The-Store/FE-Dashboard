@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
@@ -9,41 +8,26 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Autocomplete from '@mui/material/Autocomplete';
 
-function PromotionForm({ open, onClose, onSubmit }) {
+function PromotionForm({ open, onClose, onSubmit, managers }) {
   const initialFormState = {
     type: '',
     discountRate: '',
     startDate: '',
     endDate: '',
-    approveManager: '',
+    userId: '', // This will hold the userId of the selected manager
     description: '',
   };
 
-  const [formState, setFormState] = React.useState(initialFormState);
-  const [managers, setManagers] = useState([]);
-
-  useEffect(() => {
-    fetchManagers();
-  }, []);
-
-  const fetchManagers = async () => {
-    try {
-      const response = await axios.get('http://localhost:5188/api/User/GetUsers');
-      const managerData = response.data.filter(user => user.roleName === 'Manager');
-      setManagers(managerData);
-    } catch (error) {
-      console.error('Error fetching managers:', error);
-    }
-  };
+  const [formState, setFormState] = useState(initialFormState);
 
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Ngăn chặn hành động submit mặc định của form
-    onSubmit(formState); // Gọi addPromotion
-    setFormState(initialFormState); // Clear các trường của form sau khi submit
+    e.preventDefault();
+    onSubmit(formState);
+    setFormState(initialFormState);
     onClose();
   };
 
@@ -96,14 +80,13 @@ function PromotionForm({ open, onClose, onSubmit }) {
         <Autocomplete
           options={managers}
           getOptionLabel={(option) => option.username}
-          onChange={(event, value) => setFormState({ ...formState, approveManager: value ? value.userId : '' })}
-          value={formState.approveManager}
+          onChange={(event, value) => setFormState({ ...formState, userId: value ? value.userId : '' })}
           renderInput={(params) => (
             <TextField
               {...params}
               margin="dense"
-              name="approveManager"
-              label="Approval Manager"
+              name="userId"
+              label="User ID"
               type="text"
               fullWidth
               InputProps={{ ...params.InputProps, style: { marginBottom: 10 } }}
@@ -133,6 +116,7 @@ PromotionForm.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  managers: PropTypes.array.isRequired,
 };
 
 export default PromotionForm;
